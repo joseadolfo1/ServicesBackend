@@ -1,0 +1,43 @@
+# ============================================================
+#  Backend + PostgreSQL 16. Cambia NOMBRE_BD y las contraseñas.
+#  Uso: docker compose up --build -d
+# ============================================================
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: servicetechdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"                 # para conectarte con DBeaver / pgAdmin
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # Opcional: script .sql con tablas y datos (solo corre con la base vacía)
+      # - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d servicetechdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    # ghcr.io/<usuario-u-organización>/<repositorio>:<etiqueta>  (siempre en minúsculas)
+    image: ghcr.io/joseadolfo1/servicesbackend:${TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/servicetechdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: 5367566859703373367639792F423F452848284D6251655468576D5A71347437
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+    db_data:
+
