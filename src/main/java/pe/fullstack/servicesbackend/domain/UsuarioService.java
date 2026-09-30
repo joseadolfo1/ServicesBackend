@@ -8,9 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pe.fullstack.servicesbackend.controller.auth.UserInfoDetails;
+import pe.fullstack.servicesbackend.config.UserInfoDetails;
 import pe.fullstack.servicesbackend.controller.mapper.UsuarioMapper;
-import pe.fullstack.servicesbackend.controller.response.UsuarioResponse;
 import pe.fullstack.servicesbackend.domain.business.Usuario;
 import pe.fullstack.servicesbackend.repository.RolEntity;
 import pe.fullstack.servicesbackend.repository.RolRepository;
@@ -18,7 +17,6 @@ import pe.fullstack.servicesbackend.repository.UsuarioEntity;
 import pe.fullstack.servicesbackend.repository.UsuarioRepository;
 
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

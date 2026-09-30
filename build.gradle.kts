@@ -43,6 +43,8 @@ dependencies {
 	implementation("org.flywaydb:flyway-database-postgresql")
 	runtimeOnly("org.postgresql:postgresql")
 
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+
 	implementation("org.mapstruct:mapstruct:${mapstructVersion}")
 	implementation("org.projectlombok:lombok:${lombokVersion}")
 	annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")

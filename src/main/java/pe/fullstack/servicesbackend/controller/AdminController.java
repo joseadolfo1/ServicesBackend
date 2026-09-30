@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import pe.fullstack.servicesbackend.controller.auth.UserInfoDetails;
+import pe.fullstack.servicesbackend.config.UserInfoDetails;
 import pe.fullstack.servicesbackend.controller.mapper.UsuarioMapper;
 import pe.fullstack.servicesbackend.controller.request.CreateUsuarioRequest;
 import pe.fullstack.servicesbackend.controller.response.UsuarioResponse;
