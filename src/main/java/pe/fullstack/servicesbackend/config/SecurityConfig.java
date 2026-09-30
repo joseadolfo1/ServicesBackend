@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/api/me/**").hasAnyAuthority("ROLE_CLIENTE")
                         .requestMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMINISTRADOR")
                         .requestMatchers("/api/tecnic/**").hasAnyAuthority("ROLE_TECNICO")
