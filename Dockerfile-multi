@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+# ============================================================
+#  Dockerfile-multi (Optimizado para Mac y multi-arquitectura)
+# ============================================================
+
+# ---------- Etapa 1: compilar ----------
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+
+# Instalar utilidades para normalizar textos
+RUN apk add --no-cache bash dos2unix
+
+# Copiar configuración de Gradle
+COPY gradlew settings.gradle.kts build.gradle.kts ./
+COPY gradle ./gradle
+
+# Asegurar saltos de línea Unix (LF) y permisos
+RUN dos2unix gradlew && chmod +x gradlew
+
+# Descargar dependencias con caché de BuildKit
+RUN --mount=type=cache,target=/root/.gradle/caches \
+    --mount=type=cache,target=/root/.gradle/wrapper \
+    ./gradlew --no-daemon dependencies || true
+
+# Copiar el código fuente y compilar
+COPY src ./src
+RUN --mount=type=cache,target=/root/.gradle/caches \
+    --mount=type=cache,target=/root/.gradle/wrapper \
+    ./gradlew bootJar -x test --no-daemon
+
+# ---------- Etapa 2: ejecutar ----------
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Crear usuario sin privilegios
+RUN addgroup -S -g 10001 app && adduser -S -u 10001 -G app app
+
+COPY --from=build /app/build/libs/*.jar app.jar
+USER 10001
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]

@@ -45,5 +45,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGEN }}:latest
-            ${{ env.IMAGEN }}:sha-${{ env.CORTO }}
+            ${{ env.IMAGEN }}:latest-multi
+            ${{ env.IMAGEN }}:sha-${{ env.CORTO }}-multi

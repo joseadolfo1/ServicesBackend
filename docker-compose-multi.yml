@@ -1,0 +1,42 @@
+# ============================================================
+#  Backend + PostgreSQL 17 (docker-compose-multi.yml)
+# ============================================================
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: servicetech_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: servicetechdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"                 # Conexión local para DBeaver / pgAdmin
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d servicetechdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-multi    # Indica el Dockerfile personalizado
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    container_name: servicetech_backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/servicetechdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: 5367566859703373367639792F423F452848284D6251655468576D5A71347437
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
