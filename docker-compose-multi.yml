@@ -34,9 +34,26 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       JWT_SECRET: 5367566859703373367639792F423F452848284D6251655468576D5A71347437
+    #healthcheck:
+      #test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      #interval: 30s
+      #timeout: 10s
+      #retries: 3
+      #start_period: 40s
     depends_on:
       db:
         condition: service_healthy
 
+  frontend:
+    # ghcr.io/<usuario-u-organización>/<repositorio>:<etiqueta>  (siempre en minúsculas)
+    image: servicefronted:latest
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      BACKEND_URL: http://backend:8080
+    #depends_on:
+      #backend:
+        #condition: service_healthy
 volumes:
   db_data:
